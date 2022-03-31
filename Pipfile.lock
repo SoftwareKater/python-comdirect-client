@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "97a6fe517f136a8b3d53da56612f9d5a7abf265e38b4d6374c667aa73d58558a"
+            "sha256": "1b858d606279eddcc75cd188d9bc179ba6fba1469146c063f72bf9216f3b6e77"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -62,6 +62,10 @@
             ],
             "markers": "python_version >= '3'",
             "version": "==3.3"
+        },
+        "python-comdirect-client": {
+            "editable": true,
+            "path": "."
         },
         "requests": {
             "hashes": [
