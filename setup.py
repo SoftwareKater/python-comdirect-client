@@ -11,7 +11,7 @@ setup(
     ],
     entry_points={
         'console_scripts': [
-            'pcc = src:cli',
+            'pcc = src.cli:cli',
         ],
     },
 )
