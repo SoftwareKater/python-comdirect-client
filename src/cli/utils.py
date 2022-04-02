@@ -11,6 +11,9 @@ def handle_error(runtime_error: RuntimeError):
     #     return "Something bad happend on the server."
 
 
+def no_session_cached_text() -> str:
+    return 'No session cached. Please login via `pycomdir login`'
+
 def get_session_from_cache():
     cache = app_cache.AppCache()
     session = cache.get_session()
