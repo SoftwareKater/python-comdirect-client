@@ -8,7 +8,7 @@ from src.cli.documents.commands import documents as documents_command_group
 from src.cli.cache.commands import cache as cache_command_group
 from src.cli.config.commands import config as config_command_group
 import src.app_data.app_config as app_config
-from src.constants import APP_NAME, APP_VERSION
+from src.constants import APP_AUTHOR, APP_NAME, APP_VERSION
 
 
 @click.command(help = 'Login - has to be called at the beginning of every session.')
@@ -42,7 +42,8 @@ def cli():
 
 @click.command(help='Print version info and exit.')
 def version():
-    click.echo(f'{APP_NAME} {APP_VERSION}')
+    click.echo(f'{APP_NAME} {APP_VERSION}\n')
+    click.echo(f'Made with ❤  by {APP_AUTHOR}')
     return
 
 
