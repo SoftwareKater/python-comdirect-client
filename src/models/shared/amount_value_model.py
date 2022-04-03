@@ -4,6 +4,6 @@ from src.models.shared.currency_enum import Currency
 
 
 @dataclass
-class Amount():
+class AmountValue():
     value: float
     unit: Currency

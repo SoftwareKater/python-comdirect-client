@@ -5,7 +5,9 @@ import requests
 from src.api.api_service_base import ApiServiceBase
 import src.api_session as api_session
 from src.models.account.account_balance_model import AccountBalance
-from src.models.shared.amount_model import Amount
+from src.models.account.account_model import Account
+from src.models.account.account_transaction_model import AccountTransaction
+from src.models.shared.amount_value_model import AmountValue
 
 
 class AccountService(ApiServiceBase):
@@ -23,10 +25,8 @@ class AccountService(ApiServiceBase):
             headers=headers
         )
         if response.status_code != 200:
-            if (self.config['log_level'] == 'debug'):
-                print(
-                    f'Request failed with status code {response.status_code}')
-            return None
+            raise RuntimeError(
+                f'Request failed with status code {response.status_code}')
         data = response.json()["values"]
         account_balances = []
         for i in range(len(data)):
@@ -43,14 +43,12 @@ class AccountService(ApiServiceBase):
             headers=headers
         )
         if response.status_code != 200:
-            if (self.config['log_level'] == 'debug'):
-                print(
-                    f'Request failed with status code {response.status_code}')
-            return None
+            raise RuntimeError(
+                f'Request failed with status code {response.status_code}')
         data = response.json()
         return self._create_account_balance(data)
 
-    def get_transactions(self, account_id: str):
+    def get_transactions(self, account_id: str) -> Sequence[AccountTransaction]:
         auth_headers = self._auth_headers()
         headers = auth_headers
         resource_url = f'/api/banking/v1/accounts/{account_id}/transactions'
@@ -60,19 +58,34 @@ class AccountService(ApiServiceBase):
             headers=headers
         )
         if response.status_code != 200:
-            if (self.config['log_level'] == 'debug'):
-                print(
-                    f'Request failed with status code {response.status_code}')
-            return None
-        # create AccountTransaction object from response
-        return response.json()["values"]
+            raise RuntimeError(
+                f'Request failed with status code {response.status_code}')
+        data = response.json()["values"]
+        account_transactions = []
+        for i in range(len(data)):
+            account_transactions.append(
+                self._create_account_transaction(data[i]))
+        return account_transactions
 
     def _create_account_balance(self, data) -> AccountBalance:
-        return AccountBalance(
+        account = Account(
             account_display_id=data['account']['accountDisplayId'],
             account_id=data['account']['accountId'],
-            balance=Amount(value=data['balance']
-                           ['value'], unit=data['balance']['unit']),
             currency=data['account']['currency'],
             iban=data['account']['iban'],
+        )
+        balance = AccountBalance(
+            account=account,
+            balance=AmountValue(value=data['balance']
+                                ['value'], unit=data['balance']['unit']),
+        )
+        return balance
+
+    def _create_account_transaction(self, data) -> AccountTransaction:
+        return AccountTransaction(
+            amount=AmountValue(
+                value=data['amount']['value'], unit=data['amount']['unit']),
+            booking_date=data['bookingDate'],
+            booking_status=data['bookingStatus'],
+            transaction_type=data['transactionType']['key']
         )

@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from enum import Enum
-
-from src.models.shared.amount_model import Amount
+from src.models.account.transaction_type_enum import TransactionType
+from src.models.shared.amount_value_model import AmountValue
 
 
 class BookingStatus(Enum):
@@ -13,4 +13,5 @@ class BookingStatus(Enum):
 class AccountTransaction():
     booking_status: BookingStatus
     booking_date: str
-    amount: Amount
+    amount: AmountValue
+    transaction_type: TransactionType

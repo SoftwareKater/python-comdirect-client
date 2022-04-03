@@ -24,12 +24,18 @@ def get(key: str = None):
     click.echo(config.get_config_value(key))
 
 
-@click.command(help = 'Set a configuration value.')
-@click.option('--log_level', help='set the log level', type=str)
-def set(log_level: str):
+@click.command(help='Set a configuration value.')
+@click.option('--log_level', help='Set the log level.', type=str)
+@click.option('--table_format',
+              help='Set the formatting of tables. Possible values include: "plain", "simple", "github", "grid". All possible values can be found here: https://github.com/astanin/python-tabulate#table-format',
+              type=str)
+def set(log_level: str, table_format: str):
     config = app_config.AppConfig()
     if log_level:
         config.set_config_value('log_level', log_level)
+    if table_format:
+        config.set_config_value('table_format', table_format)
+
 
 config.add_command(where)
 config.add_command(get)

@@ -37,7 +37,7 @@ class AppConfig():
 
 
     def _default_config(self) -> dict:
-        return {'log_level': 'error'}
+        return {'log_level': 'error', 'table_format': 'github'}
 
 
     def _load_config(self) -> dict:
