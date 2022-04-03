@@ -12,12 +12,11 @@ from src.constants import APP_AUTHOR, APP_NAME, APP_VERSION
 
 
 @click.command(help = 'Login - has to be called at the beginning of every session.')
-@click.option('-i', '--client_id', help='client_id, starts with "User_"', required=True, type=str)
-@click.option('-s', '--client_secret', help='client_secret', required=True, type=str)
-@click.option('-u', '--username', help='username', required=True, type=str)
-@click.option('-p', '--password', help='password', required=True, type=str)
-@click.option('-v', '--verbose', help='Turn on verbose logging', is_flag=True)
-def login(client_id: str, client_secret: str, username: str, password: str, verbose: bool):
+@click.option('-i', '--client_id', prompt=True, help='client_id, starts with "User_"', required=False, type=str)
+@click.option('-s', '--client_secret', prompt=True, help='client_secret', required=False, type=str, hide_input=True)
+@click.option('-u', '--username', prompt=True, help='username', required=False, type=str)
+@click.option('-p', '--password', prompt=True, help='password', required=False, type=str, hide_input=True)
+def login(client_id: str, client_secret: str, username: str, password: str):
     access_token, refresh_token, session_id = auth.first_factor_auth(
         client_id, client_secret, username, password)
     session = api_session.ApiSession(access_token, refresh_token, session_id)
