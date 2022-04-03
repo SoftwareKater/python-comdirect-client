@@ -8,6 +8,7 @@ requests = "*"
 appdirs = "*"
 click = "*"
 python-comdirect-client = {editable = true, path = "."}
+pillow = "*"
 
 [dev-packages]
 
