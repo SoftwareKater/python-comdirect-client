@@ -9,6 +9,7 @@ appdirs = "*"
 click = "*"
 python-comdirect-client = {editable = true, path = "."}
 pillow = "*"
+tabulate = "*"
 
 [dev-packages]
 
