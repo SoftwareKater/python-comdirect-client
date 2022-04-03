@@ -1,8 +1,8 @@
 import click
-
+from tabulate import tabulate
 import src.api.account.account_service as account_service
-import src.app_data.app_cache as app_cache
 import src.cli.utils as cli_utils
+from src.data_transformation.main import account_balances_to_table
 
 
 @click.group(help='Commands related to accounts')
@@ -21,10 +21,11 @@ def balance(account_id: str):
     service = account_service.AccountService(session)
     try:
         if account_id:
-            res = service.get_account_balance_by_id(account_id)
+            res = [service.get_account_balance_by_id(account_id)]
         else:
             res = service.get_account_balances()
-        print(res)
+        table = account_balances_to_table(res)
+        print(tabulate(table, headers="firstrow", tablefmt="github"))
     except RuntimeError as err:
         cli_utils.handle_error(err)
 
