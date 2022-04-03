@@ -1,2 +1,0 @@
-class AccountBalance():
-    pass
