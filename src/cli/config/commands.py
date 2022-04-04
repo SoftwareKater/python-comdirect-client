@@ -29,12 +29,17 @@ def get(key: str = None):
 @click.option('--table_format',
               help='Set the formatting of tables. Possible values include: "plain", "simple", "github", "grid". All possible values can be found here: https://github.com/astanin/python-tabulate#table-format',
               type=str)
-def set(log_level: str, table_format: str):
+@click.option('--refresh_token',
+              help='If and when the app should refresh the session. Possible values: "always", "never"',
+              type=str)
+def set(log_level: str, table_format: str, refresh_token: str):
     config = app_config.AppConfig()
     if log_level:
         config.set_config_value('log_level', log_level)
     if table_format:
         config.set_config_value('table_format', table_format)
+    if table_format:
+        config.set_config_value('refresh_token', refresh_token)
 
 
 config.add_command(where)

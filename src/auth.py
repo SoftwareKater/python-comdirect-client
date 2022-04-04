@@ -8,7 +8,8 @@ import src.api_session as api_session
 
 
 def first_factor_auth(client_id: str, client_secret: str, username: str, password: str):
-    access_token, refresh_token = _login(client_id, client_secret, username, password)
+    access_token, refresh_token = _login(
+        client_id, client_secret, username, password)
     session_id = _get_session(access_token)
     return access_token, refresh_token, session_id
 
@@ -18,9 +19,47 @@ def second_factor_auth(client_id: str, client_secret: str, session: api_session.
     tan = challenge_user_for_tan(challenge_type, challenge)
     session_id_2fa = _send_tan(session, challenge_id, tan)
     session.session_id = session_id_2fa
-    access_token_2fa, refresh_token_2fa = _secondary_login(client_id, client_secret, session.access_token)
+    access_token_2fa, refresh_token_2fa = _secondary_login(
+        client_id, client_secret, session.access_token)
     session.access_token, session.refresh_token = access_token_2fa, refresh_token_2fa
     return session
+
+
+def logout(session: api_session.ApiSession) -> bool:
+    ''' Revoke access token, refresh token, and session TAN.
+
+        Returns True if the session and tokens were successfully revoked.
+    '''
+    response = requests.delete("https://api.comdirect.de/oauth/revoke",
+                               headers={
+                                   "Accept": "application/json",
+                                   "Content-Type": "application/x-www-form-urlencoded",
+                                   "Authorization": f"Bearer {session.access_token}"
+                               },)
+    if response.status_code != 204:
+        return False
+    return True
+
+
+def refresh(client_id: str, client_secret: str, session: api_session.ApiSession) -> api_session.ApiSession:
+    ''' Initiate the Refresh-Token-Flow to refresh the access token.'''
+    response = requests.post(
+        "https://api.comdirect.de/oauth/token",
+        f"client_id={client_id}&"
+        f"client_secret={client_secret}&"
+        f"grant_type=refresh_token&"
+        f"refresh_token={session.refresh_token}",
+        allow_redirects=False,
+        headers={
+            "Accept": "application/json",
+            "Content-Type": "application/x-www-form-urlencoded",
+        },
+    )
+    response_json = response.json()
+    new_access_token = response_json['access_token']
+    new_refresh_token = response_json["refresh_token"]
+    return new_access_token, new_refresh_token
+
 
 
 def _login(client_id: str, client_secret: str, username: str, password: str):
@@ -92,7 +131,8 @@ def get_challenge(session: api_session.ApiSession):
         raise RuntimeError(
             f"POST /session/clients/user/v1/sessions/.../validate returned status code {response.status_code}"
         )
-    response_headers = json.loads(response.headers["x-once-authentication-info"])
+    response_headers = json.loads(
+        response.headers["x-once-authentication-info"])
     challenge_id = response_headers["id"]
     challenge_type = response_headers["typ"]
     challenge = response_headers["challenge"]
@@ -107,7 +147,8 @@ def challenge_user_for_tan(challenge_type, challenge):
     elif challenge_type == "P_TAN_PUSH":
         raise NotImplementedError()
     else:
-        raise RuntimeError(f"unknown challenge procedure type {challenge_type}")
+        raise RuntimeError(
+            f"unknown challenge procedure type {challenge_type}")
     return tan
 
 
@@ -158,7 +199,7 @@ def _secondary_login(client_id: str, client_secret: str, access_token: str):
             "Content-Type": "application/x-www-form-urlencoded",
         },
         data=f"client_id={client_id}&client_secret={client_secret}&"
-                f"grant_type=cd_secondary&token={access_token}",
+        f"grant_type=cd_secondary&token={access_token}",
     )
     if not response.status_code == 200:
         raise RuntimeError(
