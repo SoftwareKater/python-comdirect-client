@@ -7,6 +7,7 @@ import src.api_session as api_session
 from src.models.account.account_balance_model import AccountBalance
 from src.models.account.account_model import Account
 from src.models.account.account_transaction_model import AccountTransaction
+from src.models.account.get_transaction_result_model import GetTransactionResult
 from src.models.shared.amount_value_model import AmountValue
 
 
@@ -48,24 +49,32 @@ class AccountService(ApiServiceBase):
         data = response.json()
         return self._create_account_balance(data)
 
-    def get_transactions(self, account_id: str) -> Sequence[AccountTransaction]:
+    def get_transactions(self, account_id: str, paging_count=100) -> GetTransactionResult:
         auth_headers = self._auth_headers()
         headers = auth_headers
         resource_url = f'/api/banking/v1/accounts/{account_id}/transactions'
+        paging_query_params = f'paging-first=0&paging-count={paging_count}'
         response = requests.get(
-            f'{self.base_url}{resource_url}',
+            f'{self.base_url}{resource_url}?{paging_query_params}',
             allow_redirects=False,
             headers=headers
         )
         if response.status_code != 200:
             raise RuntimeError(
                 f'Request failed with status code {response.status_code}')
-        data = response.json()["values"]
+        response_json = response.json()
+        data = response_json["values"]
+        matches = response.json()["paging"]['matches']
         account_transactions = []
         for i in range(len(data)):
             account_transactions.append(
                 self._create_account_transaction(data[i]))
-        return account_transactions
+        return GetTransactionResult(
+            aggregated=response_json['aggregated'],
+            account_transactions=account_transactions,
+            count=len(data),
+            total=matches,
+        )
 
     def _create_account_balance(self, data) -> AccountBalance:
         account = Account(

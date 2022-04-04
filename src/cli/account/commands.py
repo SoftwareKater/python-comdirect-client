@@ -34,7 +34,10 @@ def balance(account_id: str):
 
 @click.command(help='Get transactions for an account.')
 @click.argument('account_id', required=True)
-def transactions(account_id: str):
+@click.option('--count', help="Specify paging count")
+def transactions(account_id: str, count: int):
+    if not count:
+        count = 100
     config = app_config.AppConfig()
     tablefmt = config.get_config_value('table_format')
     session = cli_utils.get_session_from_cache()
@@ -44,12 +47,16 @@ def transactions(account_id: str):
         return
     service = account_service.AccountService(session)
     try:
-        res = service.get_transactions(account_id)
+        res = service.get_transactions(account_id, paging_count=count)
     except RuntimeError as err:
         print(err)
         return
-    table = account_transactions_to_table(res)
+    table = account_transactions_to_table(res.account_transactions)
     print(tabulate(table, headers="firstrow", tablefmt=tablefmt))
+    print()
+    print(
+        f'Showing {res.count} of {res.total} transactions in account {res.aggregated["accountId"]}')
+
 
 account.add_command(balance)
 account.add_command(transactions)
