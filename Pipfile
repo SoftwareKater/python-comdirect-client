@@ -10,6 +10,7 @@ click = "*"
 python-comdirect-client = {editable = true, path = "."}
 pillow = "*"
 tabulate = "*"
+keyring = "*"
 
 [dev-packages]
 
