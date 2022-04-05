@@ -3,6 +3,7 @@ import click
 import src.api_session as api_session
 import src.app_data.app_cache as app_cache
 import src.auth as auth
+import src.cli.utils as cli_utils
 from src.cli.account.commands import account as account_command_group
 from src.cli.documents.commands import documents as documents_command_group
 from src.cli.cache.commands import cache as cache_command_group
@@ -11,7 +12,7 @@ import src.app_data.app_config as app_config
 from src.constants import APP_AUTHOR, APP_NAME, APP_VERSION
 
 
-@click.command(help = 'Login - has to be called at the beginning of every session.')
+@click.command(help='Login - has to be called at the beginning of every session.')
 @click.option('-i', '--client_id', prompt=True, help='client_id, starts with "User_"', required=False, type=str)
 @click.option('-s', '--client_secret', prompt=True, help='client_secret', required=False, type=str, hide_input=True)
 @click.option('-u', '--username', prompt=True, help='username', required=False, type=str)
@@ -26,10 +27,17 @@ def login(client_id: str, client_secret: str, username: str, password: str):
 
 
 @click.command()
-@click.option('-c', '--clear_cache', help='Also clear the cache', is_flag=True)
-def logout(clear_cache: bool):
-    if clear_cache:
-        app_cache.wipe_cache(False, False)
+def logout():
+    session = cli_utils.get_session_from_cache()
+    if not session:
+        click.echo(
+            cli_utils.no_session_cached_text(), err=True)
+        return
+    res = auth.logout(session)
+    if not res:
+        click.echo('Something went south during logout.', err=True)
+        return
+    click.echo('Logout successful.')
 
 
 @click.group(help='A command line interface app for the comdirect API.')
