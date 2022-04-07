@@ -15,4 +15,4 @@ class ApiSession:
         return {"access_token": self.access_token, "refresh_token": self.refresh_token, "session_id": self.session_id}
 
     def __repr__(self):
-        return '{"access_token": self.access_token, "refresh_token": self.refresh_token, "session_id": self.session_id}'
+        return f'"access_token": {self.access_token}, "refresh_token": {self.refresh_token}, "session_id": {self.session_id}'

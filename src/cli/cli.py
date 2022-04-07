@@ -1,11 +1,11 @@
 import click
 import src.app_data.app_cache as app_cache
+import src.app_data.app_config as app_config
 from src.cli.account.commands import account as account_command_group
 from src.cli.auth.commands import login as login_command, logout as logout_command
 from src.cli.documents.commands import documents as documents_command_group
 from src.cli.cache.commands import cache as cache_command_group
 from src.cli.config.commands import config as config_command_group
-import src.app_data.app_config as app_config
 from src.constants import APP_AUTHOR, APP_NAME, APP_VERSION
 
 

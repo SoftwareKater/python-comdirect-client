@@ -1,9 +1,10 @@
+from functools import wraps
 import keyring
 from src.cli.constants import KEYRING_CLIENT_ID_KEY, KEYRING_CLIENT_SECRET_KEY
 import src.auth as auth
 import src.cli.utils as cli_utils
 import src.app_data.app_cache as app_cache
-import src.api_session as api_session
+import src.app_data.app_config as app_config
 
 
 def refresh_session():
@@ -19,6 +20,16 @@ def refresh_session():
     new_access_token, new_refresh_token = auth.refresh(
         client_id, client_secret, session)
 
-    new_session = api_session.ApiSession(
-        new_access_token, new_refresh_token, session.session_id)
-    cache.save_session(new_session)
+    cache.update_session({'access_token': new_access_token,
+                          'refresh_token': new_refresh_token})
+
+
+def refresh_session_after_command(f):
+    @wraps(f)
+    def wrapper(*args, **kwargs):
+        f(*args, **kwargs)
+        config = app_config.AppConfig()
+        do_refresh = config.get_config_value('refresh_token') == 'always'
+        if do_refresh:
+            refresh_session()
+    return wrapper

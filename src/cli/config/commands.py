@@ -38,7 +38,7 @@ def set(log_level: str, table_format: str, refresh_token: str):
         config.set_config_value('log_level', log_level)
     if table_format:
         config.set_config_value('table_format', table_format)
-    if table_format:
+    if refresh_token:
         config.set_config_value('refresh_token', refresh_token)
 
 

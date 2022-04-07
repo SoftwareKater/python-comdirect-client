@@ -16,7 +16,9 @@ class AppConfig():
 
 
     def get_config_value(self, key: str):
-        return self.config[key]
+        if key in self.config:
+            return self.config[key]
+        return None
 
 
     def set_config_value(self, key: str, value: str):

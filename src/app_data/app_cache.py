@@ -24,6 +24,13 @@ class AppCache():
         except KeyError:
             return None
 
+    def update_session(self, new: dict):
+        session = self.get_session()
+        for key, value in new.items():
+            if hasattr(session, key):
+                setattr(session, key, value)
+        self.save_session(session)
+
 
     def _cache_dir(self):
         return USER_CACHE_DIR
@@ -40,7 +47,7 @@ class AppCache():
         return self.file_handler.load_json(file)
 
 
-    def _create_session_from_json(self, session_json):
+    def _create_session_from_json(self, session_json) -> api_session.ApiSession:
         return api_session.ApiSession(session_json['access_token'], session_json['refresh_token'], session_json['session_id'])
 
 
