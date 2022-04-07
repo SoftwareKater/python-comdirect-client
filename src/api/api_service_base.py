@@ -1,6 +1,6 @@
 import datetime
 
-import src.api_session as api_session
+import src.models.auth.api_session as api_session
 import src.app_data.app_config as app_config
 
 

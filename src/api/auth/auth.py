@@ -4,7 +4,7 @@ import requests
 import uuid
 import datetime
 import json
-import src.api_session as api_session
+import src.models.auth.api_session as api_session
 
 
 def first_factor_auth(client_id: str, client_secret: str, username: str, password: str):

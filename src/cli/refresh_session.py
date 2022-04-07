@@ -1,7 +1,7 @@
 from functools import wraps
 import keyring
 from src.cli.constants import KEYRING_CLIENT_ID_KEY, KEYRING_CLIENT_SECRET_KEY
-import src.auth as auth
+import src.api.auth.auth as auth
 import src.cli.utils as cli_utils
 import src.app_data.app_cache as app_cache
 import src.app_data.app_config as app_config

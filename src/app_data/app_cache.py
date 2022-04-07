@@ -1,7 +1,7 @@
 import os
 import pathlib
 
-import src.api_session as api_session
+import src.models.auth.api_session as api_session
 import src.app_data.file_handler as file_handler
 from src.app_data.constants import APP_CACHE_SESSION_FILE_NAME, USER_CACHE_DIR
 

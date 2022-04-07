@@ -1,7 +1,7 @@
 import click
 import keyring
-import src.api_session as api_session
-import src.auth as auth
+import src.models.auth.api_session as api_session
+import src.api.auth.auth as auth
 from src.cli.constants import KEYRING_CLIENT_ID_KEY, KEYRING_CLIENT_SECRET_KEY
 import src.cli.utils as cli_utils
 import src.app_data.app_cache as app_cache

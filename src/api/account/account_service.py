@@ -3,7 +3,7 @@ from typing import Sequence
 import requests
 
 from src.api.api_service_base import ApiServiceBase
-import src.api_session as api_session
+import src.models.auth.api_session as api_session
 from src.models.account.account_balance_model import AccountBalance
 from src.models.account.account_model import Account
 from src.models.account.account_transaction_model import AccountTransaction

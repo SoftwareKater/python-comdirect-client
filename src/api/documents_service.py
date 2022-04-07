@@ -1,7 +1,7 @@
 import requests
 
 from src.api.api_service_base import ApiServiceBase
-import src.api_session as api_session
+import src.models.auth.api_session as api_session
 
 
 
